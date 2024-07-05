@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Status</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%; /* Adjust width for smaller size */
+            max-width: 400px; /* Set a maximum width */
+            margin: auto; /* Center content horizontally */
+        }
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>   
+</head>
+<body class="bg-gray-900 text-white p-8 flex justify-center items-center h-screen">
+    <div class="max-w-md mx-auto">
+        <div class="background-image"></div>
+        <div class="header mb-8">
+            <h1 class="text-6xl font-bold fancy-font shadow-text text-black">Attendance Status</h1>
+        </div>
+        <div class="content">
+            <table class="table-auto w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 bg-gray-800 border border-gray-700 text-center">Date</th>
+                        <th class="px-4 py-2 bg-gray-800 border border-gray-700 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-800">
+                        <td class="px-4 py-2 border border-gray-700 text-center">{{ result[0] }}</td>
+                        <td class="px-4 py-2 border border-gray-700 text-center">{{ result[1] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

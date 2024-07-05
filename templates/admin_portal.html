@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG'); /* local image file name */
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: add background color with transparency to make text more readable */
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%; /* Adjust width for smaller size */
+            max-width: 400px; /* Set a maximum width */
+        }
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>   
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col items-center justify-center">
+    <div class="background-image"></div>
+    <div class="header">
+        <h1 class="text-6xl font-bold fancy-font text-black shadow-text">Hey Admin, What are you looking for?</h1>
+    </div>
+    <div class="content text-center p-8 border border-gray-400 rounded mt-8">
+        <button onclick="window.location.href='{{ url_for('search_student') }}'" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4">Search Student Profile</button>
+        <button onclick="window.location.href='{{ url_for('attendance_record_form') }}'" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4">Retrieve Attendance Record</button>
+        <button onclick="window.location.href='{{ url_for('registered_students') }}'" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4">Get Registration Record</button>
+    </div>
+</body>
+</html>

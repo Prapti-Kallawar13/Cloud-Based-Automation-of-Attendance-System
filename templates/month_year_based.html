@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Attendance Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%; /* Adjusted width for smaller size */
+            max-width: 600px; /* Set a maximum width */
+            margin: auto; /* Center content horizontally */
+        }
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px; /* Adjusted margin top */
+            margin-bottom: 10px; /* Added margin bottom */
+        }
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 dark:bg-gray-800 text-white">
+    <div class="background-image"></div>
+    <div class="header">
+        <h1 class="text-7xl font-bold fancy-font shadow-text text-black">Monthly Attendance Data</h1>
+    </div>
+
+    <p class="text-gray-400 text-semibold mb-8 text-center">Showing attendance data for {{ month }}/{{ year }}</p>
+
+    <div class="flex justify-center">
+        <div class="overflow-x-auto w-full max-w-4xl px-4">
+            <table class="w-full text-sm sm:text-base text-left rtl:text-right border border-gray-600 dark:border-gray-500">
+                <thead class="text-xs sm:text-sm bg-gray-800 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col" class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-base sm:text-lg text-center">
+                            Student ID
+                        </th>
+                        <th scope="col" class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-base sm:text-lg text-center">
+                            Date
+                        </th>
+                        <th scope="col" class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-base sm:text-lg text-center">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for row in result %}
+                    <tr class="bg-gray-700 dark:bg-gray-600 : bg-gray-600 dark:bg-gray-500 text-center">
+                        <td class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-sm sm:text-base whitespace-nowrap">
+                            {{ row[0] }}
+                        </td>
+                        <td class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-sm sm:text-base whitespace-nowrap">
+                            {{ row[1] }}
+                        </td>
+                        <td class="border border-gray-500 px-2 sm:px-3 py-2 font-medium text-sm sm:text-base whitespace-nowrap">
+                            {{ row[2] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrieve Attendance Record</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG');
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .instructions-visible {
+            background-color: white;
+            color: black;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 h-full relative">
+
+    <div class="background-image"></div>
+    <div class="header mb-8 text-center">
+        <h1 class="text-6xl font-bold fancy-font text-center text-black shadow-text" data-text="Retrieve Attendance Record">Retrieve Attendance Record</h1>
+    </div>
+    <div class="flex justify-center items-center">
+        <div class="content max-w-md p-6 rounded-lg shadow-lg p-8 border border-gray-700">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-sm text-gray-400 fancy-font">Click on the icon at right side of the form to view the instructions before filling out the form</span>
+                <button id="toggleInstructions" class="focus:outline-none text-white">
+                    <i class="fas fa-info-circle text-xl"></i>
+                </button>
+            </div>
+            <div id="instructions" class="hidden text-sm text-gray-200 mb-4 font-semibold">
+                <p>In the field "Retrieve Attendance According to Type" there are four options for that what parameters should you choose are mentioned below:</p>
+                <ul class="list-disc list-inside text-red-600">
+                    <li>View dates when the student was present / absent: Select the specific student and the status.</li>
+                    <li>View the attendance status of a student for a particular date: Enter the student ID and select the date.</li>
+                    <li>View attendance of all the students for a particular date: Select the date to view the attendance.</li>
+                    <li>View monthly attendance data for all the students: Select the month and year.</li>
+                </ul>
+            </div>
+            <form action="/get_attendance" method="post" class="space-y-4 text-left">
+                <div>
+                    <label for="student_id" class="block text-lg font-semibold">Student ID:</label>
+                    <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                </div>
+
+                <div>
+                    <label for="status" class="block text-lg font-semibold">Status:</label>
+                    <select id="status" name="status" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                        <option value="none">None</option>
+                        <option value="present">Present</option>
+                        <option value="absent">Absent</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="date" class="block text-lg font-semibold">Date:</label>
+                    <input type="date" id="date" name="date" placeholder="Select date" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                </div>
+
+                <div>
+                    <label for="month" class="block text-lg font-semibold">Month:</label>
+                    <select id="month" name="month" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                        <option value="0">None</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="year" class="block text-lg font-semibold">Year:</label>
+                    <select id="year" name="year" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                        <option value="0">None</option>
+                        {% for year in range(2020, 2030) %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="query_type" class="block text-lg font-semibold">Retrieve Attendance According to Type:</label>
+                    <select id="query_type" name="query_type" class="mt-1 p-2 border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm rounded-md text-black">
+                        <option value="view dates when the student was present /absent">View dates when the student was present / absent</option>
+                        <option value="view the attendance status of a student for particular date">View the attendance status of a student for a particular date</option>
+                        <option value="view attendance of all the students for particular date">View attendance of all the students for a particular date</option>
+                        <option value="view monthly attendance data for all the students">View monthly attendance data for all the students</option>
+                    </select>
+                </div>
+
+                <div>
+                    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('toggleInstructions').addEventListener('click', function() {
+            var instructions = document.getElementById('instructions');
+            if (instructions.classList.contains('hidden')) {
+                instructions.classList.remove('hidden');
+                instructions.classList.add('instructions-visible');
+            } else {
+                instructions.classList.add('hidden');
+                instructions.classList.remove('instructions-visible');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

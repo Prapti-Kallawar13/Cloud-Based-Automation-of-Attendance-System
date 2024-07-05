@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" 
+    rel="stylesheet">
+    <!-- Include Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG'); /* local image file name */
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: add background color with transparency to make text more readable */
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Adjust text color and font weight for input fields */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        label {
+            color: #1F2937;
+            font-weight: bold;
+        }
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white h-full">
+    <div class="background-image"></div>
+    <div class="h-4/5">
+        <div class="centered-form flex justify-center items-center h-full pt-4">
+            <div class="w-full max-w-md bg-gray-900 rounded-lg shadow-md content p-8">
+                <div class="header">
+                    <h1 class="text-4xl font-bold mb-4 fancy-font shadow-text text-center text-gray-300">Registration Form</h1>
+                </div>
+                <form id="studentForm" action="/registered_data" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="first_name" class="block text-white text-sm font-semibold">First Name:</label>
+                        <input class="form-input mt-1 block w-full border bg-gray-400 border-gray-600 rounded p-2 focus:outline-none focus:border-blue-500 hover:bg-gray-300" type="text" name="first_name" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="last_name" class="block text-white text-sm font-semibold">Last Name:</label>
+                        <input class="form-input mt-1 bg-gray-400 block w-full border border-gray-600 rounded p-2 focus:outline-none focus:border-blue-500 hover:bg-gray-300" type="text" name="last_name" placeholder="Enter your last name" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-white text-sm font-semibold">Email:</label>
+                        <input class="form-input mt-1 block bg-gray-400 w-full border border-gray-600 rounded p-2 focus:outline-none focus:border-blue-500 hover:bg-gray-300" type="email" name="email" placeholder="Enter a valid email-id here" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="mobile_number" class="block text-white text-sm font-semibold">Mobile Number:</label>
+                        <input class="form-input bg-gray-400 mt-1 block w-full border border-gray-600 rounded p-2 focus:outline-none focus:border-blue-500 hover:bg-gray-300" type="tel" name="mobile_number" pattern="[0-9]{10}" placeholder="Please enter a 10-digit mobile number" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="location" class="block text-white text-sm font-semibold">Location:</label>
+                        <input class="form-input bg-gray-400 mt-1 block w-full border border-gray-600 rounded p-2 focus:outline-none focus:border-blue-500 hover:bg-gray-300" type="text" name="location" placeholder="Enter your location" required>
+                    </div>
+
+                    <label for="imageOption" class="block text-white text-sm font-semibold mb-2">Choose Image Option:</label>
+                    <select id="imageOption" name="imageOption" class="form-select w-full mb-4 border border-gray-600 bg-gray-400 rounded p-2 focus:outline-none focus:border-blue-500">
+                        <option value="upload">Upload Image</option>
+                        <option value="capture">Capture Image</option>
+                    </select>
+
+                    <div id="uploadImageOption">
+                        <label for="image" class="block text-sm font-semibold text-gray-100">Upload Image:</label>
+                        <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                        <div id="image-preview" class="mt-2"></div>
+                    </div>
+
+                    <div id="captureImageOption" class="hidden">
+                        <label for="capture" class="block text-sm font-semibold text-gray-500">Capture Image:</label>
+                        <video id="video" width="200" height="200" autoplay class="block"></video>
+                        <button type="button" id="captureButton" class="my-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Capture</button>
+                        <canvas id="canvas" class="hidden"></canvas>
+                        <div id="capturedImageContainer" class="mt-2">
+                            <img id="capturedImage" width="200">
+                        </div>
+                        <!-- Hidden input to hold the captured image data -->
+                        <input type="hidden" id="capturedImageData" name="capturedImageData">
+                    </div>
+
+                    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" onclick={checkNumber} type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('captureButton');
+        const studentForm = document.getElementById('studentForm');
+        const capturedImageContainer = document.getElementById('capturedImageContainer');
+        const capturedImage = document.getElementById('capturedImage');
+        const imageOption = document.getElementById('imageOption');
+        const uploadImageOption = document.getElementById('uploadImageOption');
+        const captureImageOption = document.getElementById('captureImageOption');
+        const capturedImageData = document.getElementById('capturedImageData');
+        const imageInput = document.getElementById('image');
+    
+        // Toggle image options based on user selection
+        imageOption.addEventListener('change', () => {
+            if (imageOption.value === 'upload') {
+                uploadImageOption.style.display = 'block';
+                captureImageOption.style.display = 'none';
+                capturedImageContainer.style.display = 'none';
+                video.style.display = 'none';
+                imageInput.required = true; // Ensure file input is required
+                capturedImageData.required = false; // Ensure captured image is not required
+            } else if (imageOption.value === 'capture') {
+                uploadImageOption.style.display = 'none';
+                captureImageOption.style.display = 'block';
+                capturedImageContainer.style.display = 'none';
+                video.style.display = 'block';
+                imageInput.required = false; // Ensure file input is not required
+                capturedImageData.required = true; // Ensure captured image is required
+    
+                // Access the camera and stream it to the video element
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                    })
+                    .catch(err => {
+                        console.error('Error accessing camera:', err);
+                    });
+            }
+        });
+    
+        // Capture image from video stream and display it on canvas
+        captureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imgData = canvas.toDataURL('image/jpeg');
+            capturedImageData.value = imgData;
+            capturedImage.src = imgData;
+            capturedImageContainer.style.display = 'block';
+        });
+    
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('image-preview');
+                output.innerHTML = '<img src="' + reader.result + '" style="max-width: 200px;">';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    
+        // Message after successful submission
+        studentForm.addEventListener('submit', function (event) {
+            if (imageOption.value === 'upload') {
+                // Check if an image is uploaded
+                if (!imageInput.files.length) {
+                    event.preventDefault();
+                    alert('Please upload an image before submitting.');
+                } else {
+                    alert('Data sent for registration.');
+                }
+            } else if (imageOption.value === 'capture') {
+                // Check if an image is captured
+                if (!capturedImageData.value) {
+                    event.preventDefault();
+                    alert('Please capture an image before submitting.');
+                } else {
+                    alert('Data sent for registration.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        .fancy-font {
+            font-family: 'Lobster', cursive;
+        }
+        .background-image {
+            background-image: url('https://images.collegedunia.com/public/college_data/images/campusimage/1418644015bncoe2.JPG'); /* local image file name */
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            filter: blur(10px);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: add background color with transparency to make text more readable */
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .shadow-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col items-center justify-center">
+    <div class="background-image"></div>
+    <div class="header">
+        <h1 class="text-7xl font-bold fancy-font shadow-text text-black">Welcome to BNCOE!!!</h1>
+    </div>
+    <div class="content text-center bg-gray-800 bg-opacity-75 p-8 border border-gray-400 rounded mt-8 max-w-sm w-full">
+        <!-- Button-style anchor tag -->
+        <button onclick="window.location.href='{{ url_for('verification_form') }}'" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mb-4">Student</button><br>
+        
+        <button onclick="window.location.href='{{ url_for('admin') }}'" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">Admin</button><br>
+
+    </div>
+</body>
+</html>
