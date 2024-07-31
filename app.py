@@ -4,6 +4,9 @@ from config import *
 from helper import *
 import base64
 from flask import jsonify
+import csv
+from io import StringIO
+from flask import Response
 
 
 app = Flask(__name__)
@@ -127,30 +130,36 @@ def index():
 def verification_form():
     return render_template("verification.html")
 
-
-@app.route("/verification", methods=["GET", "POST"])
+# Handle email verification form submission
+@app.route("/verification", methods=["POST"])
 def verification():
-    print("Entering into verification")
     if request.method == "POST":
-        print("Verification started")
-        # Handle verification form submission
-        ses_client = boto3.client('ses', region_name=aws_region)
-        print("ses client created")
         email = request.form.get("email")
-        print("email:",email)
-        isVerified = check_email_verification_status(ses_client,email)
-        if isVerified == False:
-            response = send_ses_verification_mail(ses_client,email)
-            print("Response for the verification mail sent for ses",response)
-        elif isVerified == True:
-            print(f"The email address {email} is verified.")
+        
+        # Send verification email using SES
+        response = send_ses_verification_mail(ses_client, email)
+        
+        # Redirect to verification form with a message or handle as needed
+        return redirect(url_for("verification_form"))
+
+    return render_template("verification.html")
+
+# Handle proceeding to registration after email verification
+@app.route("/proceed_to_registration", methods=["POST"])
+def proceed_to_registration():
+    if request.method == "POST":
+        verified_email = request.form.get("verified_email")
+
+        # Check if email is verified (implement your logic)
+        is_verified = check_email_verification_status(ses_client, verified_email)
+        
+        if is_verified:
+            # Redirect to registration page
             return redirect(url_for("registration"))
         else:
-            # Handle error if email verification fails
-            print(f"The email address {email} is not verified due to some error.")
-            # alert(f"Your email address {email} is not verified.")
-            return render_template("verification.html")
-              
+            # Handle case where email is not verified
+            return render_template("verification.html", error="Email verification failed. Please verify your email.")
+
     return render_template("verification.html")
 
 
@@ -267,10 +276,10 @@ def get_attendance():
                 cursor.close()
 
                 # Convert entry_date values to strings representing date only
-                formatted_results = [[row[0]] for row in results]
+                formatted_results = [row[0].strftime('%Y-%m-%d') for row in results]
 
                 print("Result", formatted_results)
-                return render_template("status_based.html", dates=formatted_results)
+                return render_template("status_based.html", sid=sid,status=status, dates=formatted_results)
                 
             else:
                 print("Data is unavailable")
@@ -288,7 +297,7 @@ def get_attendance():
                 
                 if result:
                     # Render the template with the fetched data
-                    return render_template("date_based.html", result=result)
+                    return render_template("date_based.html",sid=sid, result=result)
                 else:
                     # Handle case where no data is found
                     return jsonify({"error": "Data not found for the specified student and date"}), 404
@@ -371,6 +380,89 @@ def admin_login():
     # For GET request or initial load of the page
     return render_template('admin_login.html')
 
+@app.route('/download_registered_students', methods=['GET'])
+def download_registered_students():
+    cursor = db_conn.cursor()
+    query = "SELECT * FROM registration_table"
+    cursor.execute(query)
+    results = cursor.fetchall()
+    cursor.close()
+
+    # Create a CSV file in memory
+    si = StringIO()
+    cw = csv.writer(si)
+    cw.writerow(["Index", "Student ID", "First Name", "Last Name", "Email", "Phone", "Location"])
+    cw.writerows(results)
+
+    output = si.getvalue()
+    si.close()
+
+    # Create a response object and set headers
+    response = Response(output, mimetype="text/csv")
+    response.headers["Content-Disposition"] = "attachment; filename=registered_students.csv"
+
+    return response
+
+@app.route("/monthly_attendance_csv")
+def monthly_attendance_csv():
+    try:
+        cursor = db_conn.cursor()
+        query = "SELECT sid, entry_date, status FROM attendance_table WHERE MONTH(entry_date) = MONTH(CURDATE()) AND YEAR(entry_date) = YEAR(CURDATE())"
+        cursor.execute(query)
+        results = cursor.fetchall()
+        cursor.close()
+        
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["Student ID", "Date", "Status"])
+        for row in results:
+            writer.writerow(row)
+        
+        output.seek(0)
+        return Response(
+            output,
+            mimetype="text/csv",
+            headers={"Content-Disposition": "attachment;filename=monthly_attendance.csv"}
+        )
+    except Exception as e:
+        return str(e)
+
+
+@app.route("/allstudents_attendance_on_date_csv", methods=["GET", "POST"])
+def allstudents_attendance_on_date_csv():
+    if request.method == "POST":
+        date = request.form["date"]
+        
+        if date:
+            cursor = db_conn.cursor()
+            query = "SELECT sid, status FROM attendance_table WHERE entry_date = %s"
+            cursor.execute(query, (date,))
+            results = cursor.fetchall()
+            cursor.close()
+            
+            if results:
+                # Create a CSV file in memory
+                si = StringIO()
+                cw = csv.writer(si)
+                cw.writerow(["Student ID", "Status"])
+                cw.writerows(results)
                 
+                output = si.getvalue()
+                si.close()
+                
+                # Create a response object and set headers
+                response = Response(output, mimetype="text/csv")
+                response.headers["Content-Disposition"] = f"attachment; filename=attendance_on_{date}.csv"
+                
+                return response
+            else:
+                return jsonify({"error": f"No attendance records found for {date}"}), 404
+        else:
+            return jsonify({"error": "Date parameter is missing"}), 400
+            
+    return jsonify({"error": "Invalid request"}), 400
+
+
+              
 if __name__ == '__main__': 
     app.run(host='0.0.0.0',port=80,debug=True)
